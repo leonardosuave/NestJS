@@ -71,3 +71,17 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Validations request - DTO
+
+Install class-validator and class-transformer
+
+```bash
+# install
+$ npm i class-validator class-transformer
+```
+
+- Add new configuration in main.ts file
+app.useGlobalPipes(new ValidationPipe());
+
+This will validate in all aplication when use DTO, like a @Decorator beforer a data request
