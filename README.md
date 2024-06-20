@@ -85,3 +85,36 @@ $ npm i class-validator class-transformer
 app.useGlobalPipes(new ValidationPipe());
 
 This will validate in all aplication when use DTO, like a @Decorator beforer a data request
+
+## Database
+
+Install Postgresql database and ORM Prisma
+```bash
+# create docker database
+$ docker-compose -f compose_db.yml up
+```
+
+Install ORM Prisma
+```bash
+# install ORM
+$ npm i -D prisma
+
+# to start app with a new database 
+# will do the first configuration and add a files prisma (schema)
+$ npx prisma init
+
+#Creating tables
+# 1 option - Create table in IDE line DBEAVER and after run the commands
+
+# Will pull the table created and will build the table model in schema.prisma
+$ prisma db pull
+
+# This command need to be runed aways that model is edited. will update the PrismaClient()
+$ prisma generate
+
+# 2 option - Create table model and run by migrate
+$ npx prisma migrate dev --name init
+
+# Create a prisma fold and create prisma.module.ts and prisma.service.ts
+#In prisma.service.ts need to have the config to do connection with database and the config to close the connection with database (onModuleInit / enableShutdownHooks)
+```
