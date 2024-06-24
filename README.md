@@ -113,8 +113,31 @@ $ prisma db pull
 $ prisma generate
 
 # 2 option - Create table model and run by migrate
-$ npx prisma migrate dev --name init
+# In the file schema.prisma, create a model with the table config
+# Run the command and write a name to migrate file
+$ npx prisma migrate dev
 
 # Create a prisma fold and create prisma.module.ts and prisma.service.ts
 #In prisma.service.ts need to have the config to do connection with database and the config to close the connection with database (onModuleInit / enableShutdownHooks)
 ```
+
+## Creating entity to a route
+
+- Module
+    Create a module
+      Imports - In this array need to have all Entity modules in use by the module
+        Ex: I create a user.module.ts to register user in database, to register in database i need use the Prisma, so i need to import PrismaMosule.
+      Controllers: In this array need to have the class of the Controller in use, like UserController
+      Providers: In this array need to have the class of the Services that are injectable in constructor of the Controller 
+        In user.controller.ts the contructor of the class use the UserService, so to work i need to insert UserService in providers module.
+
+- Controller
+    Create a class and a method like create, insert method route decorate, Body and DTO to validate the body.
+    Call the entity service to call the logic and the database if need.
+    To use the service neeed to do the injectable in constructor class of Controller, like Angular. (constructor(private readonly userService: UserService){};).
+
+- Service  
+    Create a class with decorator @Injectable().
+    In the constructor, pass the Services that the class will use, like a PrismaService to call the database (constructor(private readonly prisma: PrismaService){};).
+    Create the method with the logic.
+
