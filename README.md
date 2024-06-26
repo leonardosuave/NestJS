@@ -141,3 +141,17 @@ $ npx prisma migrate dev
     In the constructor, pass the Services that the class will use, like a PrismaService to call the database (constructor(private readonly prisma: PrismaService){};).
     Create the method with the logic.
 
+
+## Interceptor
+  The interceptor are functions used to interceptor datas from a route and return something that you want in the response, like a execution time to the request. Work like a @Log() from Entergy.
+
+- Create Interceptor
+    Create a fold to interceptors and after a file .ts
+    Create a class that are implements NestInterceptor, and after a method intercept with context and next params.
+    In intercept write the logic to return with request's response.
+
+- Using interceptors
+  Interceptor can be applied in 3 different ways, all passing the decorator @UseInterceptors() and the parameter being the class with the created interceptor.
+    1 - Specific route handler - Adds the decorator on top of each method, example route to create users ->@UseInterceptors(LogInterceptor).
+    2 - In all controller methods - Adds the decorator in the same way, only next to the @Controller() decorator.
+    3 - Global - Adds directly to the bootstrap function in main.ts, within the function to identify which app will be used, the interceptor -> app.useGlobalInterceptors(new LogInterceptor()).
