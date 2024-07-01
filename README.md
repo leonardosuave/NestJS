@@ -166,4 +166,13 @@ $ npx prisma migrate dev
     The are the option to specific routes using .forRoutes() or specific route that not want to use the middleware using .exclude().
 
 ## Guards
-  The Guards are used to verify if can or not access routes, its used to verify if user are authenticated or has permission to access the routes. (Like middleware).    
+  The Guards are used to verify if can or not access routes, its used to verify if user are authenticated or has permission to access the routes. (Like middleware), returning true or false only. 
+  The Guards are created to verify only one things, to verify more things you need to create more guards and do the verify separately.
+  Ex: auth-guards.ts verify if token is valid and if valid return user infos.
+      auth-status-guard.ts verify if token is valid and return true or false. (fastest route to verify if token in use already valid and if false need create a new token).
+
+  - Create guards
+    Create the class implements CanActive from @nestjs/cammon;
+    Add contructor() if neccessary import a service to do the verify.
+    add method canActivate(context: ExecutionContext) and this method will have the logic to verify if guards can be tru or false.
+
