@@ -155,3 +155,15 @@ $ npx prisma migrate dev
     1 - Specific route handler - Adds the decorator on top of each method, example route to create users ->@UseInterceptors(LogInterceptor).
     2 - In all controller methods - Adds the decorator in the same way, only next to the @Controller() decorator.
     3 - Global - Adds directly to the bootstrap function in main.ts, within the function to identify which app will be used, the interceptor -> app.useGlobalInterceptors(new LogInterceptor()).
+
+## Middlewares
+  The middlewares in NestJS working like Express, will pass beforer the controller if will do de check neccessary, if ok will go to controller, if not send error.
+  - Create Middleware
+    Create a file to the middleware, create a class that are implements "NestMiddleware", use the method "use" that received req, res and next params and in this method do the verify. Out of the method pass the "next()" to go to the controller if the success verifies.
+
+  - Use middleware
+    Go tho the module of the entity, like user.modules.ts and in the export class module pass the implements "NestModule" and a method "configure" with params "consume" that are a "MiddlewareConsumer" type. In this method "consume" are a object and using consume.apply() pass the class middleware creare with the logic that want to use in the entity.
+    The are the option to specific routes using .forRoutes() or specific route that not want to use the middleware using .exclude().
+
+## Guards
+  The Guards are used to verify if can or not access routes, its used to verify if user are authenticated or has permission to access the routes. (Like middleware).    
