@@ -14,6 +14,8 @@ import { AuthService } from './auth.service';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { AuthGuard } from 'src/guards/auth-guard';
 import { AuthStatusGuard } from 'src/guards/auth-status-guard';
+import { User } from 'src/decorators/user.decorator';
+import { UserMEPartialDTO } from './dto/get-user-by-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -46,8 +48,8 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('me')
-  async me(@Request() request) {
-    return request.userByToken;
+  async me(@User() user: UserMEPartialDTO | UserMEPartialDTO[]) {
+    return user;
   }
 
   @UseGuards(AuthStatusGuard)
