@@ -12,8 +12,8 @@ import { ForgetPasswordDTO } from './dto/forget-password.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
-import { AuthGuard } from 'src/guards/auth-guard';
-import { AuthStatusGuard } from 'src/guards/auth-status-guard';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthStatusGuard } from 'src/guards/auth-status.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -47,7 +47,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('me')
   async me(@Request() request) {
-    return request.userByToken;
+    return request.user;
   }
 
   @UseGuards(AuthStatusGuard)

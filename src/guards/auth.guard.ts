@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
       if (authorization && authorization.startsWith('Bearer')) {
         const accessToken = authorization.split(' ')[1];
         const user = this.authService.checkToken(accessToken);
-        request.userByToken = user;
+        request.user = user;
         return true;
       }
     } catch (error) {
