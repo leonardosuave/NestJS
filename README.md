@@ -176,6 +176,13 @@ $ npx prisma migrate dev
     Add contructor() if neccessary import a service to do the verify.
     add method canActivate(context: ExecutionContext) and this method will have the logic to verify if guards can be tru or false.
 
+## Custom Param Decorator
+  The Customer Param Decorator are @Decorators that receive the Request data and can be validate before call a service
+  - Create
+    Create a file with a export const, this const need to call a createParamDecorator() function from @nestjs/common that call another callback with 2 params.
+      First param is a param sended when import the final Decorator in the controller, can be a string, object, array.
+      Second param is the context, type from ExecutionContext from @nestjs/common and this context can capture the datas sended in the Resquest, like a token send to the Guard, filter there and return the user infos and after capture in Custom Decorator and done a new filter, like return only the datas received in the first params. 
+
 ## Autorização RBAC(Controle de Autorização por Role)
   This controlle allow only user with a specific role registered in database to access specific routes. To this, a GUARD can do the check in user in use is allow and return true or false to continue the access flow.
   Ex: I have a route to create something, but only some user roles MASTER and ADMIN can create and i have user roles NORMAL registered. So i use this validate in the guard, taking token access with user infos saved and i check if user roles is allowed.
