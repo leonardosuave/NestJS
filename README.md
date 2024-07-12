@@ -183,3 +183,40 @@ $ npx prisma migrate dev
       First param is a param sended when import the final Decorator in the controller, can be a string, object, array.
       Second param is the context, type from ExecutionContext from @nestjs/common and this context can capture the datas sended in the Resquest, like a token send to the Guard, filter there and return the user infos and after capture in Custom Decorator and done a new filter, like return only the datas received in the first params. 
 
+## Autorização RBAC(Controle de Autorização por Role)
+  This controlle allow only user with a specific role registered in database to access specific routes. To this, a GUARD can do the check in user in use is allow and return true or false to continue the access flow.
+  Ex: I have a route to create something, but only some user roles MASTER and ADMIN can create and i have user roles NORMAL registered. So i use this validate in the guard, taking token access with user infos saved and i check if user roles is allowed.
+  To this is used @CustomerDecorator to informe the roles allowed or another data used to validation and a guard in the controller to allowed or no the access.
+    IMPORTANT: If validation is only some routes from controller, put the customer decorator beforer method and UseGuard() in the class with guard created to allow or no in the params.
+               If validation is in all routes, use in the class, but need to declar first the customerDecorator and after the useGuards.
+
+  OBS: Customer Decorator take the info neccessary to access and the guard take this info from Customer Decorator and do the validation.             
+
+  - Create a Customer Decorator 
+    In the decorator folder, create a new file. The const name is the decorator name and the params of arrow function will have the params passed. This arrow function will call SetMetadata from @nestjs/common and will received 2 params. First params is the key name and Second params is the values received in the params of the function. This params is passed in decorator like @CustomerName('Parameter-here').
+    
+
+  - Create a guard to verify.
+    Create in guards folder a new file to this verify. (The class is a implements from CanActivate).
+    In the constructor need to use the reflactor imported from Reflector (This import will reflect the validate in routes in use by this guard).
+    In the method canActivate(contect: ExecutionContext) will have the logic to validation.
+      In the method use the reflactor to get the roles or another data in use to validation passed into params custommer decorator and setted in Metadata.
+        ex: cosnt requiredRoles = this.reflactor.getAllAndOverride<type[]>('Key name setted', [context.getHandler(), context.getClass()])
+            the cosnt requiredRoles will received a array and each index is a role allowed => ['MASTER', 'ADMIN']
+
+      With this infos user another services imported in constructor to take another infos to validation or infos saved in another guard, like the auth.guard.ts the runned before and save the user infos in request.user
+        To take the request.user use the context to take the infos of Resquest
+          ex: const { user } = context.switchToHttp().getRequest().
+          Now have user info and can validate with requiredRoles.
+
+## Circular Dependency
+  The circular dependency are errors when i controller ou module use another module and this another module use the first module, happen a infinit looping.
+    Ex: I have a guard used in users routes, so this guard use the authService to validate the token received in the guard, so i need tho import authModule to use the service. This way the userModule need authModule to work. The auths routes use the userService to register a new user, so i need to import the userModule to use the user service.
+      I will have a infinit looping and will generate this error. 
+        userModule -> authModule -> userModule ->authModule.........
+
+  - Resolve error
+    To resolve the error you need to use the "forwardRef" method and referer the modules in circular dependency. 
+      To this in both modules import the Module uwind the forwardRef.
+        Ex: (user.module.ts) - > imports:[...., forwardRef(() => AuthModule)]
+            (auth.module.ts) - > imports:[...., forwardRef(() => UserModule)]

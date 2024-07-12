@@ -5,6 +5,7 @@ class User implements Omit<UserPrisma, 'password' | 'createdAt' | 'updatedAt'> {
   id: string;
   name: string;
   email: string;
+  role: string;
 }
 
 // @UpdatePatchUserDTO used to customer params decorator

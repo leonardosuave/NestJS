@@ -12,8 +12,8 @@ import { ForgetPasswordDTO } from './dto/forget-password.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
-import { AuthGuard } from 'src/guards/auth-guard';
-import { AuthStatusGuard } from 'src/guards/auth-status-guard';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthStatusGuard } from 'src/guards/auth-status.guard';
 import { User } from 'src/decorators/user.decorator';
 import { UserMEPartialDTO } from './dto/get-user-by-token.dto';
 
