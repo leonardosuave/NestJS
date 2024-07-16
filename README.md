@@ -220,3 +220,19 @@ $ npx prisma migrate dev
       To this in both modules import the Module uwind the forwardRef.
         Ex: (user.module.ts) - > imports:[...., forwardRef(() => AuthModule)]
             (auth.module.ts) - > imports:[...., forwardRef(() => UserModule)]
+
+## DDOS Attack (Throttler)
+  To app be security againt DDOS attack can be used the ThrottlerModule from @nestjs/throttler and config the access limit per seconds.
+    To use the Throttler need to install -> npm i @nestjs/throttler. (it was used v3.1.0).
+    After, import the ThrottlerModule on app.modules.ts and do the start config.
+      In Imports, use ThrottlerModule.forRoot({"here put the configs"}).
+      To use the ThrottlerModule in all application put in app.modules.ts, providers a new object like a service in use.
+        {provide: APP_GUARD, useClass: ThrottlerGuard} -> APP_GUARD from @nestjs/core and ThrottlerGuard from @nestjs/throttler
+
+      If want to limit in a specific controller or specific route, need to use like a Guard -> UseGuards(ThrottlerGuard) and not declair the objet in the app.modules.ts, providers like up exemple.
+
+      If neccess, you want use the Throttler in specific place or in all app and in another specific place overwritte the configs to have a specific config in the route or controller.
+        To overwritte when used in all app, you can use the @Decorator @Throttle() and this decorator will receive the params specificated in the app.module.ts
+        To ignore the Throttler in a specific route or controller when used in a global system, like all app or controller, use the @Decorator @SkipThrottle() in the route or controller.
+
+    OBS: You can config a new the Throttler in the controller or specific route. To this, UseGuards(new ThrottlerGuard(){"here put the configs"}).            
