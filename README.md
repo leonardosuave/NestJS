@@ -235,4 +235,24 @@ $ npx prisma migrate dev
         To overwritte when used in all app, you can use the @Decorator @Throttle() and this decorator will receive the params specificated in the app.module.ts
         To ignore the Throttler in a specific route or controller when used in a global system, like all app or controller, use the @Decorator @SkipThrottle() in the route or controller.
 
-    OBS: You can config a new the Throttler in the controller or specific route. To this, UseGuards(new ThrottlerGuard(){"here put the configs"}).            
+    OBS: You can config a new the Throttler in the controller or specific route. To this, UseGuards(new ThrottlerGuard(){"here put the configs"}).
+
+## Upload image/files
+  To upload image/files in the route, need to use in the route the interceptor FileInterceptor('name file') to receive only 1 file, FilesInterceptor('name file') to receive in name file one file array or FileFieldsInterceptors() to receive a lot of files name that can be arrays or no. 
+    ex: @UseInterceptors(FileInterceptor('file')).
+
+  The datas will received in the @UploadedFile() or @UploadedFiles() in route params like @Body, and the variable can be type as Express.Multer.File 
+    ex: async uploadFile(@UploadedFile() file: Express.Multer.File).
+    ex: async uploadFilesFields(@UploadedFiles() files: {photo: Express.Multer.File, documents: Express.Multer.File[]}) -> photo is only 1 file and documents is a array files
+
+  The decorator of route can receive params to validate specific things about the file, like max size, file type and another things.
+    ex: async uploadPhoto(@UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: 'image/png' }),   -> accept only png type
+          new MaxFileSizeValidator({ maxSize: 1024 * 70 })    -> accept max size 70 KB
+        ]
+      })
+    ))
+
+  OBS: In Insomnia or Postman to send a file array need to create 2 or more row with same field name.     
