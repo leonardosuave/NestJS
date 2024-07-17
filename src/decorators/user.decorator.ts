@@ -5,7 +5,9 @@ import {
 } from '@nestjs/common';
 
 export const User = createParamDecorator(
-  (data: string | string[], context: ExecutionContext) => {
+  (filter: string | string[], context: ExecutionContext) => {
+    //filter is a array or string sended in Decorator @User in the route - @User(['email', 'name']), @User('name')
+
     const request = context.switchToHttp().getRequest();
 
     if (!request.user) {
@@ -15,11 +17,11 @@ export const User = createParamDecorator(
     }
 
     const userFilted = {};
-    if (Array.isArray(data)) {
-      data.forEach((d) => (userFilted[d] = request.user[d]));
+    if (Array.isArray(filter)) {
+      filter.forEach((d) => (userFilted[d] = request.user[d]));
       return (request.user = userFilted);
-    } else if (data) {
-      userFilted[data] = request.user[data];
+    } else if (filter) {
+      userFilted[filter] = request.user[filter];
       return (request.user = userFilted);
     }
     return request.user;

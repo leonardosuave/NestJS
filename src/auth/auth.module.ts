@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthService } from './auth.service';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AuthService } from './auth.service';
       secret: process.env.SECRET_AUTH,
     }),
     forwardRef(() => UserModule),
+    FileModule,
     PrismaModule,
   ],
   controllers: [AuthController],
