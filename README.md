@@ -255,4 +255,67 @@ $ npx prisma migrate dev
       })
     ))
 
-  OBS: In Insomnia or Postman to send a file array need to create 2 or more row with same field name.     
+  OBS: In Insomnia or Postman to send a file array need to create 2 or more row with same field name.
+
+  ## Send Emails
+    To send emails, the nestJs have package developed using the NodeMailer. To this, search nest mailer (https://github.com/nest-modules/mailer?tab=readme-ov-file).
+      Installation:
+        npm install --save @nestjs-modules/mailer nodemailer
+        npm install --save-dev @types/nodemailer
+
+        Templates to choise (choise 1 template and install) -> It was used the pug.
+        npm install --save handlebars
+        npm install --save pug
+        npm install --save ejs
+        npm install --save mjml
+
+    Configurate NodeMailer:
+      In app.module.ts, import the follow code to do the connection with host email that will send the emails. It was used the Ethereal Email to send the emails (This is a host test to send emails).
+
+      MailerModule.forRoot({
+      transport: {
+        host: 'smtp.ethereal.email',
+        port: 587,
+        auth: {
+          user: 'myles.leannon@ethereal.email',
+          pass: 'bZnYPbSGgZdyYRUMnw',
+        },
+      },
+      defaults: {
+        from: '"nest-study" <myles.leannon@ethereal.email>',
+      },
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
+
+    transport can be a string like prisma connection that have all datas neccessary to connect with host email.
+    template need to be configurate to work with template installed in the beforer steep. (PugAdapter was imported by dist because the template file need to be in dist fold when transpile to javascript). If not found the template in dist fold try restart the app or go to the nest-cli.json file and in compilerOptions add the follow config to create the the template file/fold in dist fold:
+      "compilerOptions": {
+        "assets": [{
+          "include": "templates/**/*",
+          "outDir": "dist"
+        }],
+      }
+
+   After configurate, create the fold and file with template, in this example was used the pug template.
+
+   To send the emails, declair the variable on the service like a external service improted to use.   
+    import { MailerService } from '@nestjs-modules/mailer/dist';
+    private readonly mailer: MailerService,
+
+    await this.mailer.sendMail({
+      subject: 'Password Recovery',
+      to: user.email,
+      template: 'forget',
+      context: {
+        name: user.name,
+        token: token,
+      },
+    });
+
+    In context pass the variables used in template file. 

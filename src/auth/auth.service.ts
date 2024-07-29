@@ -12,6 +12,7 @@ import { User } from '@prisma/client';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
+import { MailerService } from '@nestjs-modules/mailer/dist';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly userService: UserService,
+    private readonly mailer: MailerService,
   ) {}
 
   createToken(user: User) {
@@ -86,21 +88,51 @@ export class AuthService {
       throw new UnauthorizedException('Email incorrect.');
     }
 
-    //TO DO Add service to send email;
+    const token = this.jwtService.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      {
+        expiresIn: '30 minutes',
+        subject: user.id,
+        issuer: 'forget',
+        audience: 'users',
+      },
+    );
+
+    await this.mailer.sendMail({
+      subject: 'Password Recovery',
+      to: user.email,
+      template: 'forget',
+      context: {
+        name: user.name,
+        token: token,
+      },
+    });
+
     return true;
   }
 
   async resetPassword({ password, token }: ResetPasswordDTO) {
-    //TO DO validate token
+    try {
+      const { id } = this.jwtService.verify(token, {
+        audience: 'users',
+        issuer: 'forget',
+      });
 
-    const id = 'Algo aqui'; //TO DO take id from token
+      const hashPassword = await this.userService.hashPassword(password);
+      const user = await this.prisma.user.update({
+        data: { password: hashPassword },
+        where: { id },
+      });
 
-    const user = await this.prisma.user.update({
-      data: { password },
-      where: { id },
-    });
-
-    return this.createToken(user);
+      return this.createToken(user);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   async register(data: AuthRegisterDTO) {
