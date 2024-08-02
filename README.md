@@ -121,9 +121,11 @@ $ npx prisma migrate dev
 #In prisma.service.ts need to have the config to do connection with database and the config to close the connection with database (onModuleInit / enableShutdownHooks)
 
 # Run all migrates existing and update database after clone the project
+$ npx prisma generate
 $ npx prisma migrate deploy
 
 # Run all migrates existing and update database after clone the project (This command is used when exist register in database, so will delete all register and create again apply the migrates)
+$ npx prisma generate
 $ npx prisma migrate reset
 ```
 
