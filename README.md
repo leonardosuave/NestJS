@@ -122,6 +122,9 @@ $ npx prisma migrate dev
 
 # Run all migrates existing and update database after clone the project
 $ npx prisma migrate deploy
+
+# Run all migrates existing and update database after clone the project (This command is used when exist register in database, so will delete all register and create again apply the migrates)
+$ npx prisma migrate reset
 ```
 
 ## Creating entity to a route
