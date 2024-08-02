@@ -119,6 +119,9 @@ $ npx prisma migrate dev
 
 # Create a prisma fold and create prisma.module.ts and prisma.service.ts
 #In prisma.service.ts need to have the config to do connection with database and the config to close the connection with database (onModuleInit / enableShutdownHooks)
+
+# Run all migrates existing and update database after clone the project
+$ npx prisma migrate deploy
 ```
 
 ## Creating entity to a route
